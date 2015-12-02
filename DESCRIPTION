@@ -1,0 +1,20 @@
+Package: NPS
+Type: Package
+Title: Convenience Functions and Tests for Working With the Net
+        Promoter Score (NPS)
+Version: 1.1
+Date: 2014-12-03
+Author: Brendan Rocks
+Maintainer: Brendan Rocks <rocks.brendan@gmail.com>
+Description: Small functions to make working with survey data in the context of
+    a Net Promoter programme easier. Specifically, data transformation methods,
+    some methods for examining the statistical properties of the NPS, such as
+    its variance and standard errors, and some simple inferential testing
+    procedures. Net Promoter and NPS are registered trademarks of Bain &
+    Company, Satmetrix Systems and Fred Reichheld.
+License: GPL (>= 2)
+Encoding: UTF-8
+Packaged: 2014-12-03 23:55:48 UTC; brendan.rocks
+NeedsCompilation: no
+Repository: CRAN
+Date/Publication: 2014-12-04 01:12:37

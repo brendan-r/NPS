@@ -1,0 +1,14 @@
+80b712e05db52f7138c8fdec3ab00de9 *DESCRIPTION
+0f61cf621da9bad7bae8f97671aa6dfd *NAMESPACE
+f702c20a7977f989137cb7c7fefd677a *R/Documented_Package_and_Data_details.r
+997d1dffee2b053452e606e4366d66d1 *R/Documented_Small_NPS_Functions.r
+7936ec1ddeac3f11e518db8f662b0813 *data/testdata.rda
+b01d670e332d0bbf8c8b6f9a2f67c601 *man/NPS-package.Rd
+08c8b2b50d483fea4d73f2fde905750d *man/npc.Rd
+5b6ffa3fa5036dfaf76d769bfb7919d1 *man/nps.Rd
+8f87bbea3d714a51239db30b9ff718e3 *man/nps.se.Rd
+3d7eddd88008a8747c6d49b1bec36873 *man/nps.test.Rd
+4180c18d45f1dd68820f28c4b4cca45a *man/nps.var.Rd
+7df23de9c7580899ee190ec67cc1f91e *man/npvar.Rd
+f4fc8b6625ca3414fa2bb8a6430cd2a9 *man/scalestrip.Rd
+c6d1ab59f69a19b744ac2925094a2d47 *man/testdata.Rd

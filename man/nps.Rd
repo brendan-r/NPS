@@ -28,8 +28,8 @@ multiply them by 100 (and perhaps round them!) prior to presentation.
 \examples{
 # This will generate 1000 dummy Likelihood to Recommend reponses
 x <- sample(
-  0:10, 1000, replace = TRUE
-  prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35),
+  0:10, 1000, replace = TRUE,
+  prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35)
 )
 
 # Here are the proportions of respondents giving each Likelihood to

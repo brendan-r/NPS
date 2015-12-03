@@ -31,8 +31,8 @@ data.frame(score = -2:12, category = npc(-2:12))
 
 # When you have lots of data, summaries are useful
 x <- sample(
-  0:10, 1000, replace = TRUE
-  prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35),
+  0:10, 1000, replace = TRUE,
+  prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35)
 )
 
 # A Histrogram of the Likelihood to Recommend scores we just generated

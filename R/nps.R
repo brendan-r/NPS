@@ -20,8 +20,8 @@
 #' @examples
 #' # This will generate 1000 dummy Likelihood to Recommend reponses
 #' x <- sample(
-#'   0:10, 1000, replace = TRUE
-#'   prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35),
+#'   0:10, 1000, replace = TRUE,
+#'   prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35)
 #' )
 #'
 #' # Here are the proportions of respondents giving each Likelihood to
@@ -73,8 +73,8 @@ nps <- function(x, breaks = list(0:6, 7:8, 9:10)){
 #'
 #' # When you have lots of data, summaries are useful
 #' x <- sample(
-#'   0:10, 1000, replace = TRUE
-#'   prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35),
+#'   0:10, 1000, replace = TRUE,
+#'   prob = c(0.02, 0.01, 0.01, 0.01, 0.01, 0.03, 0.03, 0.09, 0.22, 0.22, 0.35)
 #' )
 #'
 #' # A Histrogram of the Likelihood to Recommend scores we just generated

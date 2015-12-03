@@ -1,4 +1,4 @@
-#'Convenience Functions and Tests for Working With the Net Promoter Score (NPS)
+#' Convenience Functions and Tests for Working With the Net Promoter Score (NPS)
 #'
 #' Small functions to make working with survey data in the context of a Net
 #' Promoter programme easier. Specifically, data transformation methods, some

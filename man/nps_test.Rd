@@ -2,11 +2,15 @@
 % Please edit documentation in R/nps_tests.R
 \name{nps_test}
 \alias{nps_test}
+\alias{nps_test_}
 \alias{print.nps_test}
+\alias{print.nps_test,}
 \title{Significance tests and confidence intervals for Net Promoter Scores}
 \usage{
 nps_test(x, y = NULL, test = "wald", conf = 0.95,
   breaks = getOption("nps.breaks"))
+
+nps_test_(x, y = NULL, test = "wald", conf = 0.95)
 
 \method{print}{nps_test}(x, ...)
 }

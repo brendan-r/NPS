@@ -14,7 +14,7 @@
 #' @param \dots Not used.
 #' @inheritParams nps
 #' @return A \code{\link{list}} of class \code{nps.test} containing:
-#'   \item{nps.x, nps.y}{The Net Promoter score(s)} \item{delta}{Where both
+#'   \item{nps.x, nps.y}{The Net Promoter score(s)} \item{delta.hat}{Where both
 #'   \code{x} and \code{y} have been specified, the absolute difference between
 #'   the two scores} \item{int}{The confidence interval generated. For a one
 #'   sample test, this will be a confidence interval around \code{nps.x}. For a
@@ -24,48 +24,104 @@
 #'   parameters} \item{p.value}{The p value of the significance test}
 #'   \item{sig}{\code{\link{logical}}. Whether or not the \code{p.value} of the
 #'   test exceeded 1-\code{conf}} \item{se.hat}{The estimated standard error of
-#'   \code{delta} for a two sample test, otherwise of \code{x}}
+#'   \code{delta.hat} for a two sample test, otherwise of \code{x}}
 #'   \item{type}{\code{\link{character}} string indicating whether a one or two
 #'   sample test was performed} \item{n.x, n.y}{Counts for \code{x} and
 #'   \code{y}}
-#' @aliases print.nps_test
+#' @aliases print.nps_test, nps_test_
 #' @export
 #' @seealso \code{\link{nps_var}}, \code{\link{nps_se}}, \code{\link{nps}}
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
 nps_test <- function(x, y = NULL, test = "wald", conf = .95,
-                     breaks = getOption("nps.breaks")){
+                     breaks = getOption("nps.breaks")) {
+  if (is.null(y)) {
+    # If there's no y supplied, don't pass it
+    nps_test_(npc(x, breaks = breaks), test = test, conf = conf)
+  } else {
+    # But if there is, do
+    nps_test_(
+      npc(x, breaks = breaks), npc(y, breaks = breaks), test = test, conf = conf
+    )
+  }
+}
 
-  alpha <- 1-conf
-  z     <- qnorm(1-alpha/2)
 
-  nps.x <- nps(x)
-  var.x <- nps.var(x)
-  n.x   <- sum(!is.na(npc(x)))
+#' @name nps_test
+#' @export
+nps_test_ <- function(x, y = NULL, test = "wald", conf = .95){
 
-  type <- if(is.null(y)) "One sample" else "Two sample"
-
-  if (type == "One sample") {
-    se.hat  <- sqrt(var.x/n.x)
-    int     <- c(nps.x + z * sqrt(var.x/n.x), nps.x - z * se.hat)
-    p.value <- 1 - (pnorm(abs(nps.x - 0) / se.hat) * 2 -1)
-    delta   <- abs(0 - nps.x)
-    nps.y   <- n.y <- NA
+  # A function for adding Agresti-Coull weights, if reqested
+  add_wts <- function(x) {
+    if (test == "adjusted.wald") {
+      wts <- switch(
+        shape,
+        "uniform"    = c(N/3, N/3, N/3),
+        "triangular" = c(N/4, N/2, N/4),
+        "extremes"   = c(N/2, 0,   N/2)
+      )
+      x <- x + wts
+    }
+    x
   }
 
-  if (type == "Two sample") {
-    nps.y  <- nps(y)
-    var.y  <- nps.var(y)
-    n.y    <- sum(!is.na(npc(y)))
+  # Interval parameters
+  alpha <- 1 - conf
+  z     <- stats::qnorm(1 - alpha / 2)
 
-    delta   <- abs(nps.x - nps.y)
-    se.hat  <- sqrt((var.x/n.x) + (var.y/n.y))
-    int     <- c(delta - z * se.hat, delta + z * se.hat)
-    p.value <- 1 - (pnorm(delta / se.hat) * 2 -1)
+  # Stats before the addition of weights
+  nps.x.raw <- nps_(x)
+  n.x.raw   <- sum(x)
+
+  # Basic stats for x
+  x.hat <- add_wts(x)
+
+  nps.x <- nps_(x.hat)
+  var.x <- nps_var_(x.hat)
+  n.x   <- sum(x.hat)
+
+  type <- if (is.null(y)) "One sample" else "Two sample"
+
+  if (type == "One sample" & test == "iterative") {
+    int <- iterative(x, p)
+
+    sig <- min(int) > 0
+    delta.hat <- abs(0 - nps.x.raw)
+
+    p.value <- nps.y.raw <- n.y.raw <- NULL
+
+  } else if (type == "One sample" & test != "iterative") {
+
+    se.hat    <- sqrt(var.x / n.x)
+    int       <- c(nps.x + z * sqrt(var.x / n.x), nps.x - z * se.hat)
+    p.value   <- 1 - (stats::pnorm(abs(nps.x - 0) / se.hat) * 2 - 1)
+    delta.hat <- abs(0 - nps.x)
+    sig       <- p.value < alpha
+
+    # NULL out non-existent quantities for the return object
+    nps.y.raw <- n.y.raw <- NULL
+
+  } else if (type == "Two sample" & test != "iterative") {
+
+    # Stats before the addition of weights
+    nps.y.raw <- nps_(y)
+    n.y.raw   <- sum(y)
+
+    # Stats after the addition of weights (used for interval construction)
+    y.hat  <- add_wts(y)
+    nps.y  <- nps_(y.hat)
+    var.y  <- nps_var_(y.hat)
+    n.y    <- sum(y.hat)
+
+    delta.hat <- abs(nps.x - nps.y)
+    se.hat    <- sqrt((var.x / n.x) + (var.y / n.y))
+    int       <- c(delta.hat - z * se.hat, delta.hat + z * se.hat)
+    p.value   <- 1 - (stats::pnorm(delta.hat / se.hat) * 2 - 1)
+    sig       <- p.value < alpha
   }
 
-  out <- list(nps.x = nps.x, nps.y = nps.y, delta = delta, int = int,
-              conf = conf, p.value = p.value, sig = p.value < alpha,
-              se.hat = se.hat, type = type, n.x = n.x, n.y = n.y)
+  out <- list(nps.x = nps.x.raw, nps.y = nps.y.raw, delta.hat = delta.hat,
+              int = int, conf = conf, p.value = p.value, sig = sig,
+              se.hat = se.hat, type = type, n.x = n.x.raw, n.y = n.y.raw)
 
   class(out) <- "nps_test"
   return(out)
@@ -83,7 +139,7 @@ print.nps_test <- function(x, ...) {
 
   if (x$type == "Two sample") {
     cat("NPS of y: ", round(x$nps.y,2), " (n = " , x$n.y, ")\n", sep = "")
-    cat("Difference:", round(x$delta,2), "\n")
+    cat("Difference:", round(x$delta.hat,2), "\n")
   }
   cat("\n")
 

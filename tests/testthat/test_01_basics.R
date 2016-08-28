@@ -3,23 +3,56 @@
 
 context("Basic Stats")
 
-test_that("Credentials are in the local repo", {
+test_that("Warnings are given about strange-looking input data", {
 
-  # Detractors, Passives, and Promoters for 0:10 data
-  ppd010 <- c(rep("Detractor", 7), rep("Passive", 2), rep("Promoter", 2))
+  # This should be fine
+  expect_silent(npc(0:10))
 
-  expected <- c(NA, NA,  ppd010, NA, NA)
+  # This should produce a warning about non-integer input
+  expect_warning(npc(c(1/3, 0:10)), "integer")
 
-  # User should be warned if they're entering (some) invalid data
-  expect_warning(
-    cats <- npc(-2:12),
-    "values outside specified"
-  )
+  # This should produce a warning that values outside the range have been
+  # coerced to NA
+  expect_warning(npc(-1:10), "outside.*range")
+  expect_warning(npc(0:11),  "outside.*range")
 
-  # Does it NA in the right way?
-  expect_true(all(is.na(expected) == is.na(cats)))
+})
 
-  # When it outputs numbers, are they the right ones?
-  expect_true(all(na.omit(cats) == na.omit(expected)))
+
+test_that("Errors are thrown on bad input data", {
+
+  # It would be real bad if the answer was 0
+  expect_error(npc(c()))
+
+  # Iterative tests aren't supported in the two sample case at the moment
+  expect_error(nps_test_(1:3, 1:3, test = "iterative"))
+
+
+})
+
+test_that("Output data types & handling of missing data as expected", {
+
+
+})
+
+
+test_that("Valid sig tests return S3 objects", {
+
+})
+
+
+test_that("Statistical functions give expected answers", {
+
+})
+
+test_that("Statistical functions agree with themselves", {
+
+})
+
+test_that("Formatting options work", {
+
+})
+
+test_that("Novel break points work", {
 
 })

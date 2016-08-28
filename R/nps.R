@@ -168,21 +168,29 @@ nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
 #' This function calculates the standard error (see below) of a Net Promoter
 #' Score, taking a \code{\link{vector}} of raw \emph{Recommend} data
 #'
-#' @name nps.se
-#' @aliases nps.se
 #' @inheritParams nps
 #' @return \code{\link{numeric}}. The variance of the distribution, ranging from
 #'   0 to 1.
 #' @export
-#' @seealso \code{\link{npvar}}, a version which works on counts or proportions
-#'   of responses
+#' @seealso \code{\link{nps_var}} for the variance of a Net Promoter Score.
 #' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
 nps_se <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
-  nps_format(
     sqrt(nps_var(x, na.rm = na.rm) / sum(!is.na(npc(x))))
-  )
 }
 
+
+# Aggregate functions ----------------------------------------------------------
+
+nps_ <- function(x) {
+  nps_format(x[3] - x[1]) / sum(x)
+}
+
+nps_var_ <- function(x, na.rm = FALSE) {
+  props <- as.numeric(prop.table(x))
+  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2)
+}
+
+# Depricated aliases -----------------------------------------------------------
 
 nps.var <- function(...) {
   nps2_name_check()
@@ -194,62 +202,12 @@ nps.se <- function(...) {
   nps_se(...)
 }
 
-#' Strips Likert scale point labels, returns numeric or ordinal data
-#'
-#' Survey systems export responses to Likhert scales with the scale labels on,
-#' meaning that R as factors or text as opposed to numeric data. This function
-#' takes labelled scales and returns unlabelled numeric data (by default), or an
-#' unlabelled ordered factor (if requested).
-#'
-#' @name scalestrip
-#' @aliases scalestrip
-#' @param x a \code{\link{vector}}, \code{\link{matrix}}, or
-#'   \code{\link{data.frame}}, containing Likert data labelled in the format
-#'   "Integer - some text", e.g. "10 - Extremely Likely"
-#' @param ordinal \code{\link{logical}} (\code{TRUE}\\code{FALSE}). Should the
-#'   data returned be an ordered factor? Otherwise the data returned is
-#'   \code{\link{numeric}}. Defaults to \code{FALSE}.
-#' @return Unlabelled numeric data (by defualt), or an unlabelled ordered factor
-#'   (if requested).
-#' @export
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
-scalestrip <- function(x, ordinal = FALSE) {
-  out <- function(x) switch(ordinal + 1, as.numeric(x), ordered(x))
-
-  if (!(is.data.frame(x) | is.matrix(x))) {
-    return(out(as.numeric(gsub("[[:alpha:]]|[[:punct:]]", "", x))))
-  }
-
-  else if (is.data.frame(x) | is.matrix(x)) {
-    for (i in 1:ncol(x)) {
-      x[, i] <- out(gsub("[[:alpha:]]|[[:punct:]]", "", x[, i]))
-    }
-    return(x)
-  }
+npvar <- function(...) {
+  nps2_name_check()
+  nps_var_(...)
 }
 
-#' @return \code{NULL}
-#'
-#' @rdname nps_test
-#' @export
-print.nps_test <- function(x, ...) {
-  cat(x$type, "Net Promoter Score Z test\n\n")
-
-  cat("NPS of x: ", round(x$nps.x,2), " (n = " , x$n.x, ")\n", sep = "")
-
-  if (x$type == "Two sample") {
-    cat("NPS of y: ", round(x$nps.y,2), " (n = " , x$n.y, ")\n", sep = "")
-    cat("Difference:", round(x$delta,2), "\n")
-  }
-  cat("\n")
-
-  cat(
-    if (x$type == "One sample") "Standard error of x:"
-    else
-      "Standard error of difference:"
-    , round(x$se.hat, 3), "\n")
-
-  cat("Confidence level:", x$conf, "\n")
-  cat("p value:", x$p.value, "\n")
-  cat("Confidence interval:", x$int, "\n\n")
+nps.test <- function(...) {
+  nps2_name_check()
+  nps_test(...)
 }

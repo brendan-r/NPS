@@ -110,14 +110,22 @@ nps_ <- function(x, nps.100 = getOption("nps.100")) {
 #' table(x, npc(x))
 #'
 #' nps(x)
-npc <- function(x, breaks = getOption("nps.breaks")) {
+npc <- function(x, breaks = getOption("nps.breaks"),
+                nps.100 = getOption("nps.100")) {
 
-  # Coerce to numeric
-  if (!is.numeric(x)) {
-    message("Warning: Data of class ", paste(class(x), collapse = " "),
-            " supplied; converted to numeric.")
-    x <- as.numeric(as.character(factor(x, levels = unlist(breaks))))
+  # Warn if non-integer values have been supplied
+  if (any(x %% 1 != 0)) {
+    warning("Non-integer values supplied in x.")
   }
+
+  # Warn if any values supplied are outside the range of breaks supplied
+  if (any(x < min(breaks) | x > max(breaks))) {
+    warning("One more more values in x are outside of range of the scale ",
+            "described in 'breaks' (",
+            paste0(range(getOption("nps.breaks")), collapse = " to "),
+            "). They have been coerced to NA.")
+  }
+
 
   # Check if any of the supplied values are outside of the range of the breaks
   # provided

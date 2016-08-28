@@ -14,10 +14,9 @@ nps2_name_check <- function() {
 }
 
 
-nps_format <- function(x) {
-  # If the user has set an option to get all NPS stats multiplied by 100, do
-  # this for them
-  if (getOption("nps.100")) {
+nps_format <- function(x, nps.100 = getOption("nps.100")) {
+  # If the user wants all NPS stats multiplied by 100, do this for them
+  if (nps.100) {
     return(x * 100)
   }
 

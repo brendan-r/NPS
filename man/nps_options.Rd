@@ -43,6 +43,6 @@ Options can be set in the usual way using \code{\link{options}}, and include:
 }
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 

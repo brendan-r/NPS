@@ -29,7 +29,7 @@ This function calculates the Net Promoter Score variance, taking a
 \code{\link{vector}} of raw \emph{Recommend} data
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 \seealso{
 \code{\link{nps_var_}}, a version which works on counts or

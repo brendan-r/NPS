@@ -29,7 +29,7 @@ This function calculates the standard error (see below) of a Net Promoter
 Score, taking a \code{\link{vector}} of raw \emph{Recommend} data
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 \seealso{
 \code{\link{nps_var}} for the variance of a Net Promoter Score.

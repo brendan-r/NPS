@@ -57,7 +57,7 @@ of \emph{Recommend} data distributions. Currently, only a Wald type test is
 supported.
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 \seealso{
 \code{\link{nps_var}}, \code{\link{nps_se}}, \code{\link{nps}}

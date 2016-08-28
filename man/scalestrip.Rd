@@ -26,6 +26,6 @@ takes labelled scales and returns unlabelled numeric data (by default), or an
 unlabelled ordered factor (if requested).
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 

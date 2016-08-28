@@ -63,7 +63,7 @@ nps(x)
 round(nps(x)) ; round(nps(x), 1)
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 \seealso{
 \code{\link{npc}}

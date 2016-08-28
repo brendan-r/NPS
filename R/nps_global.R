@@ -62,7 +62,7 @@ nps_format <- function(x) {
 #'
 #' @return A \code{list} of the options available
 #'
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 nps_options <- function() {
   avail <- c(
     "nps.breaks",

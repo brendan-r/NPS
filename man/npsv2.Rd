@@ -58,6 +58,6 @@ the interpretation of existing code based on NPS. Most prominently:
 }
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 

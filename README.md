@@ -19,7 +19,7 @@ If you'd like to download the development version from GitHub, use
 
 ```R
 # install.packages("devtools")
-devtools::install_github("brendan-R/NPS")
+devtools::install_github("brendan-r/NPS")
 ```
 <!-- 
 ## Usage
@@ -34,5 +34,3 @@ Two sample test
 
 Standard Errors
  -->
-## License
-MIT

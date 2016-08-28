@@ -31,7 +31,7 @@
 #' @aliases print.nps_test
 #' @export
 #' @seealso \code{\link{nps_var}}, \code{\link{nps_se}}, \code{\link{nps}}
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 nps_test <- function(x, y = NULL, test = "wald", conf = .95,
                      breaks = getOption("nps.breaks")){
 

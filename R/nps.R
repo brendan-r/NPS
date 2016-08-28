@@ -23,7 +23,7 @@
 #' @aliases nps
 #' @export
 #' @seealso \code{\link{npc}}
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 #' @examples
 #' # This will generate 1000 dummy Likelihood to Recommend reponses
 #' x <- sample(
@@ -66,7 +66,7 @@ nps <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE){
 #' @return Net Promoter categories
 #' @export
 #' @seealso \code{\link{nps}}
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 #' @examples
 #' # The command below will generate Net Promoter categories for each point
 #' # on a standard 0:10 Likelihood to Recommend scale
@@ -123,7 +123,7 @@ npc <- function(x, breaks = getOption("nps.breaks")) {
 #' @export
 #' @seealso \code{\link{nps_var_}}, a version which works on counts or
 #'   proportions of responses
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
   # Break the raw scores into categories
   categories <- npc(x, breaks)
@@ -148,7 +148,7 @@ nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
 #'   0 to 1.
 #' @export
 #' @seealso \code{\link{nps_var}} for the variance of a Net Promoter Score.
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 nps_se <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
     sqrt(nps_var(x, na.rm = na.rm) / sum(!is.na(npc(x))))
 }

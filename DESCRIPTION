@@ -3,9 +3,12 @@ Type: Package
 Title: Convenience Functions and Tests for Working With the Net
     Promoter Score (NPS)
 Version: 2.0.999
-Authors@R: person("Brendan", "Rocks", email = "foss@brendanrocks.com",
-    role = c("aut", "cre"))
+Authors@R: c(
+    person("Brendan", "Rocks", email = "foss@brendanrocks.com",
+           role = c("aut", "cre"))
+    )
 URL: https://github.com/brendan-r/NPS/
+BugReports: https://github.com/brendan-r/NPS/issues
 Description: Small functions to make working with survey data in the context of
     a Net Promoter programme easier. Specifically, data transformation methods,
     some methods for examining the statistical properties of the NPS, such as

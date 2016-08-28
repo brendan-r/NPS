@@ -14,7 +14,7 @@ Net Promoter and NPS are registered trademarks of Bain & Company, Satmetrix
 Systems and Fred Reichheld.
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 \keyword{package}
 

@@ -11,7 +11,7 @@
 #' @name NPS-package
 #' @aliases NPS
 #' @docType package
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 #' @keywords package
 NULL
 
@@ -21,7 +21,7 @@ NULL
 #'
 #' @name testdata
 #' @docType data
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 #' @keywords data
 NULL
 
@@ -81,5 +81,5 @@ NULL
 #' }
 #'
 #' @name npsv2
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 NULL

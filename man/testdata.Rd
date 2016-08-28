@@ -8,7 +8,7 @@
 An idealised test data set, for demonstrating some of the NPS functions
 }
 \author{
-Brendan Rocks \email{rocks.brendan@gmail.com}
+Brendan Rocks \email{foss@brendanrocks.com}
 }
 \keyword{data}
 

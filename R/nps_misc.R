@@ -16,7 +16,7 @@
 #' @return Unlabelled numeric data (by defualt), or an unlabelled ordered factor
 #'   (if requested).
 #' @export
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
+#' @author Brendan Rocks \email{foss@@brendanrocks.com}
 scalestrip <- function(x, ordinal = FALSE) {
   out <- function(x) switch(ordinal + 1, as.numeric(x), ordered(x))
 

@@ -32,34 +32,46 @@
 #' @export
 #' @seealso \code{\link{nps_var}}, \code{\link{nps_se}}, \code{\link{nps}}
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
-nps_test <- function(x, y = NULL, test = "wald", conf = .95,
-                     breaks = getOption("nps.breaks")) {
+nps_test <- function(
+  x, y = NULL, test = "wald", conf = .95,
+  pseudo_observations = c(0.75, 1.50, 0.75), breaks = getOption("nps.breaks"),
+  nps.100 = getOption("nps.100")
+) {
+
   if (is.null(y)) {
     # If there's no y supplied, don't pass it
-    nps_test_(npc(x, breaks = breaks), test = test, conf = conf)
+    nps_test_(
+      npc(x, breaks = breaks), test = test, conf = conf,
+      pseudo_observations = pseudo_observations
+    )
   } else {
     # But if there is, do
     nps_test_(
-      npc(x, breaks = breaks), npc(y, breaks = breaks), test = test, conf = conf
+      npc(x, breaks = breaks), npc(y, breaks = breaks), test = test,
+      conf = conf, pseudo_observations = pseudo_observations
     )
   }
 }
 
 
+
 #' @name nps_test
 #' @export
-nps_test_ <- function(x, y = NULL, test = "wald", conf = .95){
+nps_test_ <- function(
+  x, y = NULL, test = "wald", conf = .95,
+  pseudo_observations = c(0.75, 1.50, 0.75), nps.100 = getOption("nps.100")
+) {
+
+  # Working with the multiply by 100 thing is too much of a headache during
+  # interval construction. Set to FALSE here, turn it back on before exiting
+  nps.100.user_setting <- getOption("nps.100")
+  options(nps.100 = FALSE)
+  on.exit(options(nps.100 = nps.100.user_setting))
 
   # A function for adding Agresti-Coull weights, if reqested
   add_wts <- function(x) {
     if (test == "adjusted.wald") {
-      wts <- switch(
-        shape,
-        "uniform"    = c(N/3, N/3, N/3),
-        "triangular" = c(N/4, N/2, N/4),
-        "extremes"   = c(N/2, 0,   N/2)
-      )
-      x <- x + wts
+      x <- x + pseudo_observations
     }
     x
   }
@@ -81,18 +93,27 @@ nps_test_ <- function(x, y = NULL, test = "wald", conf = .95){
 
   type <- if (is.null(y)) "One sample" else "Two sample"
 
-  if (type == "One sample" & test == "iterative") {
-    int <- iterative(x, p)
+  # At the moment, you're not supporting the iterative test in the two sample
+  # case. Exit if this is selected.
+
+  if (type != "One sample" & test == "iterative") {
+
+    stop("The iterative interval estimation procedure is currently only",
+         "supported for one sample tests.")
+
+  } else if (type == "One sample" & test == "iterative") {
+
+    int <- nps_format(iterative(x, alpha), nps.100)
 
     sig <- min(int) > 0
     delta.hat <- abs(0 - nps.x.raw)
 
-    p.value <- nps.y.raw <- n.y.raw <- NULL
+    p.value <- nps.y.raw <- n.y.raw <- se.hat <- NULL
 
   } else if (type == "One sample" & test != "iterative") {
 
     se.hat    <- sqrt(var.x / n.x)
-    int       <- c(nps.x + z * sqrt(var.x / n.x), nps.x - z * se.hat)
+    int       <- c(nps.x - z * se.hat, nps.x + z * se.hat)
     p.value   <- 1 - (stats::pnorm(abs(nps.x - 0) / se.hat) * 2 - 1)
     delta.hat <- abs(0 - nps.x)
     sig       <- p.value < alpha
@@ -119,9 +140,23 @@ nps_test_ <- function(x, y = NULL, test = "wald", conf = .95){
     sig       <- p.value < alpha
   }
 
-  out <- list(nps.x = nps.x.raw, nps.y = nps.y.raw, delta.hat = delta.hat,
-              int = int, conf = conf, p.value = p.value, sig = sig,
-              se.hat = se.hat, type = type, n.x = n.x.raw, n.y = n.y.raw)
+  # Re-set the user's preference for NPS units
+  options(nps.100 = nps.100.user_setting)
+
+  out <-
+    list(
+      nps.x = nps_format(nps.x.raw),
+      nps.y = nps_format(nps.y.raw),
+      delta.hat = nps_format(delta.hat),
+      int = nps_format(int),
+      conf = conf,
+      p.value = p.value,
+      sig = sig,
+      se.hat = nps_format(se.hat),
+      type = type,
+      n.x = n.x.raw,
+      n.y = n.y.raw
+    )
 
   class(out) <- "nps_test"
   return(out)
@@ -143,14 +178,21 @@ print.nps_test <- function(x, ...) {
   }
   cat("\n")
 
-  cat(
-    if (x$type == "One sample") "Standard error of x:"
-    else
-      "Standard error of difference:"
-    , round(x$se.hat, 3), "\n")
+  if (!is.null(x$se.hat)) {
+    cat(
+      if (x$type == "One sample") "Standard error of x:"
+      else
+        "Standard error of difference:"
+      , round(x$se.hat, 3), "\n"
+    )
+  }
 
   cat("Confidence level:", x$conf, "\n")
-  cat("p value:", x$p.value, "\n")
+
+  if (!is.null(x$p.value)) {
+    cat("p value:", x$p.value, "\n")
+  }
+
   cat("Confidence interval:", x$int, "\n\n")
 }
 

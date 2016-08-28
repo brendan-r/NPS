@@ -2,9 +2,10 @@
 % Please edit documentation in R/nps.R
 \name{nps.se}
 \alias{nps.se}
+\alias{nps_se}
 \title{Calculate the standard error of a Net Promoter Score}
 \usage{
-nps.se(x, breaks = list(0:6, 7:8, 9:10))
+nps_se(x, breaks = getOption("nps.breaks"), na.rm = FALSE)
 }
 \arguments{
 \item{x}{A vector of \emph{Recommend} scores}

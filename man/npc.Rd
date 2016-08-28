@@ -4,7 +4,7 @@
 \alias{npc}
 \title{Create Net Promoter Categories from Likelihood to Recommend Scores}
 \usage{
-npc(x, breaks = list(0:6, 7:8, 9:10))
+npc(x, breaks = getOption("nps.breaks"))
 }
 \arguments{
 \item{x}{A vector of \emph{Recommend} scores}

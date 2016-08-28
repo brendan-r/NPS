@@ -4,7 +4,7 @@
 \alias{nps}
 \title{Calculate a Net Promoter Score}
 \usage{
-nps(x, breaks = list(0:6, 7:8, 9:10))
+nps(x, breaks = getOption("nps.breaks"), na.rm = FALSE)
 }
 \arguments{
 \item{x}{A vector of \emph{Recommend} scores}

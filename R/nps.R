@@ -46,9 +46,15 @@
 #'
 #' # You can round it if you like
 #' round(nps(x)) ; round(nps(x), 1)
-nps <- function(x, breaks = list(0:6, 7:8, 9:10)){
-  mean(as.numeric(npc(x))-2)
+nps <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE){
+  nps_format(mean(as.numeric(npc(x)) - 2, na.rm = na.rm))
 }
+
+
+nps_ <- function(x) {
+  nps_format((x[3] - x[1]) / sum(x))
+}
+
 
 #' Create Net Promoter Categories from Likelihood to Recommend Scores
 #'
@@ -90,26 +96,19 @@ nps <- function(x, breaks = list(0:6, 7:8, 9:10)){
 #' table(x, npc(x))
 #'
 #' nps(x)
-npc <- function(x, breaks = list(0:6, 7:8, 9:10)) {
+npc <- function(x, breaks = getOption("nps.breaks")) {
+
+  # Coerce to numeric
   if (!is.numeric(x)) {
     message("Warning: Data of class ", paste(class(x), collapse = " "),
             " supplied; converted to numeric.")
     x <- as.numeric(as.character(factor(x, levels = unlist(breaks))))
   }
 
-  x2 <- x[!is.na(x)]
-  na <- !x2 %in% unlist(breaks)
+  # Check if any of the supplied values are outside of the range of the breaks
+  # provided
 
-  if (length(na) < 1) {
-    return(NA)
-  }
-
-  if (mean(na) != 0) {
-    warning(sum(na), " values outside specified range for Recommend scale (",
-            min(unlist(breaks)), ":", max(unlist(breaks)),
-            "), and excluded.  Use 'breaks' to change this.")
-  }
-  cut(x, c(min(unlist(breaks) - 1), unlist(lapply(breaks, max))),
+  cut(x, breaks, include.lowest = TRUE,
       labels = c("Detractor", "Passive", "Promoter"))
 }
 
@@ -130,10 +129,11 @@ npc <- function(x, breaks = list(0:6, 7:8, 9:10)) {
 #' @seealso \code{\link{nps.var}}, a version which works on raw Recommend
 #'   responses
 #' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
-npvar <- function(x) {
+nps_var_ <- function(x, na.rm = FALSE) {
   props <- as.numeric(prop.table(x))
-  (props[3] + props[1]) - (props[3] - props[1])^2
+  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2)
 }
+
 
 #' Calculate the variance of a Net Promoter Score
 #'
@@ -149,8 +149,19 @@ npvar <- function(x) {
 #' @seealso \code{\link{npvar}}, a version which works on counts or proportions
 #'   of responses
 #' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
-nps.var <- function(x, breaks = list(0:6, 7:8, 9:10))
-  npvar(table(npc(x, breaks)))
+nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
+  # Break the raw scores into categories
+  categories <- npc(x, breaks)
+
+  # Throw an NA if you're supposed to
+  if (any(is.na(categories)) & !na.rm) {
+    return(NA)
+  }
+
+  # Calculate the variance from the aggregates
+  nps_var_(table(categories))
+}
+
 
 #' Calculate the standard error of a Net Promoter Score
 #'
@@ -228,6 +239,11 @@ nps.test <- function(x, y=NULL, test="wald", conf = .95,
     nps.y  <- nps(y)
     var.y  <- nps.var(y)
     n.y    <- sum(!is.na(npc(y)))
+nps_se <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
+  nps_format(
+    sqrt(nps_var(x, na.rm = na.rm) / sum(!is.na(npc(x))))
+  )
+}
 
     delta   <- abs(nps.x - nps.y)
     se.hat  <- sqrt((var.x/n.x) + (var.y/n.y))
@@ -238,9 +254,16 @@ nps.test <- function(x, y=NULL, test="wald", conf = .95,
   out <- list(nps.x = nps.x, nps.y = nps.y, delta = delta, int = int,
               conf = conf, p.value = p.value, sig = p.value < alpha,
               se.hat = se.hat, type = type, n.x = n.x, n.y = n.y)
+nps.var <- function(...) {
+  nps2_name_check()
+  nps_var(...)
+}
 
   class(out) <- "nps.test"
   return(out)
+nps.se <- function(...) {
+  nps2_name_check()
+  nps_se(...)
 }
 
 #' Strips Likert scale point labels, returns numeric or ordinal data
@@ -262,7 +285,7 @@ nps.test <- function(x, y=NULL, test="wald", conf = .95,
 #'   (if requested).
 #' @export
 #' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
-scalestrip <- function (x, ordinal = FALSE) {
+scalestrip <- function(x, ordinal = FALSE) {
   out <- function(x) switch(ordinal + 1, as.numeric(x), ordered(x))
 
   if (!(is.data.frame(x) | is.matrix(x))) {
@@ -279,14 +302,14 @@ scalestrip <- function (x, ordinal = FALSE) {
 
 #' @return \code{NULL}
 #'
-#' @rdname nps.test
+#' @rdname nps_test
 #' @export
-print.nps.test <- function(x, ...){
+print.nps_test <- function(x, ...) {
   cat(x$type, "Net Promoter Score Z test\n\n")
 
   cat("NPS of x: ", round(x$nps.x,2), " (n = " , x$n.x, ")\n", sep = "")
 
-  if(x$type == "Two sample"){
+  if (x$type == "Two sample") {
     cat("NPS of y: ", round(x$nps.y,2), " (n = " , x$n.y, ")\n", sep = "")
     cat("Difference:", round(x$delta,2), "\n")
   }

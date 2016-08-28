@@ -2,9 +2,10 @@
 % Please edit documentation in R/nps.R
 \name{nps.var}
 \alias{nps.var}
+\alias{nps_var}
 \title{Calculate the variance of a Net Promoter Score}
 \usage{
-nps.var(x, breaks = list(0:6, 7:8, 9:10))
+nps_var(x, breaks = getOption("nps.breaks"), na.rm = FALSE)
 }
 \arguments{
 \item{x}{A vector of \emph{Recommend} scores}

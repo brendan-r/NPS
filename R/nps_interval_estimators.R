@@ -1,9 +1,9 @@
 
 # Here's Tago:
-iterative <- function(x, p) {
+iterative <- function(x, alpha) {
   n <- sum(x)
   pa <- 2 * n
-  z <- qnorm(p)
+  z <- qnorm(1 - alpha / 2)
   c <- x[3]
   b <- x[1]
   nps <- (c - b) / n

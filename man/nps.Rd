@@ -9,12 +9,19 @@ nps(x, breaks = getOption("nps.breaks"), na.rm = FALSE)
 \arguments{
 \item{x}{A vector of \emph{Recommend} scores}
 
-\item{breaks}{A \code{list} of length three, giving the integer Likert scale
-points for \emph{Detractors}, \emph{Passives}, and \emph{Promoters},
-respectively. The default is \code{list(0:6, 7:8, 9:10)}}
+\item{breaks}{A \code{vector} of length three, giving integer Likert scale
+break-points for Net Promoter categories. Best practice is to set the
+values you'd like to use at the start of a session, with
+\code{options(nps.breaks = c(0, 6, 8, 10))} (for the usual setting of 0-6
+being \emph{Detractors}, 7-8 being \emph{Passives} and 9-10 being
+\emph{Promoters}, also the package default), or whichever values you would
+like. However, a vector may be supplied directly.}
+
+\item{na.rm}{a logical value indicating whether \code{NA} values should be
+stripped before the computation proceeds.}
 }
 \value{
-a Net Promoter Score. Unrounded.
+a Net Promoter Score.
 }
 \description{
 This function calculates a Net Promoter Score from a vector of

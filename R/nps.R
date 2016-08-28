@@ -9,10 +9,17 @@
 #' multiply them by 100 (and perhaps round them!) prior to presentation.
 #'
 #' @param x A vector of \emph{Recommend} scores
-#' @param breaks A \code{list} of length three, giving the integer Likert scale
-#'   points for \emph{Detractors}, \emph{Passives}, and \emph{Promoters},
-#'   respectively. The default is \code{list(0:6, 7:8, 9:10)}
-#' @return a Net Promoter Score. Unrounded.
+#' @param breaks A \code{vector} of length three, giving integer Likert scale
+#'   break-points for Net Promoter categories. Best practice is to set the
+#'   values you'd like to use at the start of a session, with
+#'   \code{options(nps.breaks = c(0, 6, 8, 10))} (for the usual setting of 0-6
+#'   being \emph{Detractors}, 7-8 being \emph{Passives} and 9-10 being
+#'   \emph{Promoters}, also the package default), or whichever values you would
+#'   like. However, a vector may be supplied directly.
+#' @param na.rm a logical value indicating whether \code{NA} values should be
+#'   stripped before the computation proceeds.
+#'
+#' @return a Net Promoter Score.
 #' @aliases nps
 #' @export
 #' @seealso \code{\link{npc}}
@@ -50,19 +57,11 @@ nps <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE){
   nps_format(mean(as.numeric(npc(x)) - 2, na.rm = na.rm))
 }
 
-
-nps_ <- function(x) {
-  nps_format((x[3] - x[1]) / sum(x))
-}
-
-
 #' Create Net Promoter Categories from Likelihood to Recommend Scores
 #'
 #' This function produces Net Promoter Categories for \code{\link{numeric}} or
 #' \code{\link{integer}} \emph{Recommend} data
 #'
-#' @name npc
-#' @aliases npc
 #' @inheritParams nps
 #' @return Net Promoter categories
 #' @export
@@ -116,38 +115,14 @@ npc <- function(x, breaks = getOption("nps.breaks")) {
 #' Calculate the variance of a Net Promoter Score
 #'
 #' This function calculates the Net Promoter Score variance, taking a
-#' \code{\link{vector}} of length three, with numbers or proportions of
-#' \emph{Detractors}, \emph{Passives}, and \emph{Promoters}, respectively.
-#'
-#' @param x A \code{\link{vector}} of length three, with numbers or proportions
-#'   of \emph{Detractors}, \emph{Passives}, and \emph{Promoters}, respectively
-#' @name npvar
-#' @aliases npvar
-#' @return \code{\link{numeric}}. The variance of the distribution, ranging from
-#'   0 to 1.
-#' @export
-#' @seealso \code{\link{nps.var}}, a version which works on raw Recommend
-#'   responses
-#' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
-nps_var_ <- function(x, na.rm = FALSE) {
-  props <- as.numeric(prop.table(x))
-  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2)
-}
-
-
-#' Calculate the variance of a Net Promoter Score
-#'
-#' This function calculates the Net Promoter Score variance, taking a
 #' \code{\link{vector}} of raw \emph{Recommend} data
 #'
-#' @name nps.var
-#' @aliases nps.var
 #' @inheritParams nps
 #' @return \code{\link{numeric}}. The variance of the distribution, ranging from
 #'   0 to 1.
 #' @export
-#' @seealso \code{\link{npvar}}, a version which works on counts or proportions
-#'   of responses
+#' @seealso \code{\link{nps_var_}}, a version which works on counts or
+#'   proportions of responses
 #' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
 nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
   # Break the raw scores into categories

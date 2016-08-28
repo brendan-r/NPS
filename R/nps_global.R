@@ -1,9 +1,18 @@
 #' Small function to emit warnings for using functions in the old syntax.
 nps2_name_check <- function() {
-  parent <- deparse(sys.calls()[[sys.nframe() - 1]])
-  warning(parent, " is depricated, and will be removed in the next release.\n",
-          "Use ", gsub("\\.", "_", parent), " instead.")
+  old <- deparse(sys.calls()[[sys.nframe() - 1]])
+  new <- gsub("\\.", "_", old)
+
+  # The only function which isn't going from `dot.format` to `snake_case` is
+  # npvar
+  if (grepl("npvar", new)) {
+    new <- "nps_var_"
+  }
+
+  warning(old, " is depricated, and will be removed in the next release.\n",
+          "Use ", new, " instead.")
 }
+
 
 nps_format <- function(x) {
   # If the user has set an option to get all NPS stats multiplied by 100, do

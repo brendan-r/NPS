@@ -30,7 +30,6 @@
 #'   \code{y}}
 #' @aliases print.nps_test
 #' @export
-#' @name nps_test
 #' @seealso \code{\link{nps_var}}, \code{\link{nps_se}}, \code{\link{nps}}
 #' @author Brendan Rocks \email{rocks.brendan@@gmail.com}
 nps_test <- function(x, y = NULL, test = "wald", conf = .95,
@@ -72,8 +71,30 @@ nps_test <- function(x, y = NULL, test = "wald", conf = .95,
   return(out)
 }
 
-#' @keywords internal
-nps.test <- function(...) {
-  nps2_name_check()
-  nps_test(...)
+
+#' @return \code{NULL}
+#'
+#' @rdname nps_test
+#' @export
+print.nps_test <- function(x, ...) {
+  cat(x$type, "Net Promoter Score Z test\n\n")
+
+  cat("NPS of x: ", round(x$nps.x,2), " (n = " , x$n.x, ")\n", sep = "")
+
+  if (x$type == "Two sample") {
+    cat("NPS of y: ", round(x$nps.y,2), " (n = " , x$n.y, ")\n", sep = "")
+    cat("Difference:", round(x$delta,2), "\n")
+  }
+  cat("\n")
+
+  cat(
+    if (x$type == "One sample") "Standard error of x:"
+    else
+      "Standard error of difference:"
+    , round(x$se.hat, 3), "\n")
+
+  cat("Confidence level:", x$conf, "\n")
+  cat("p value:", x$p.value, "\n")
+  cat("Confidence interval:", x$int, "\n\n")
 }
+

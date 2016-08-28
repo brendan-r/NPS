@@ -54,7 +54,21 @@
 #' # You can round it if you like
 #' round(nps(x)) ; round(nps(x), 1)
 nps <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE){
-  nps_format(mean(as.numeric(npc(x)) - 2, na.rm = na.rm))
+  # Break the raw scores into categories
+  categories <- npc(x, breaks)
+
+  # Throw an NA if you're supposed to
+  if (any(is.na(categories)) & !na.rm) {
+    return(NA)
+  }
+
+  as.numeric(nps_(table(categories)))
+}
+
+#' @name nps
+#' @export
+nps_ <- function(x) {
+  nps_format((x[3] - x[1]) / sum(x))
 }
 
 #' Create Net Promoter Categories from Likelihood to Recommend Scores
@@ -137,6 +151,13 @@ nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
   nps_var_(table(categories))
 }
 
+#' @name nps_var
+#' @export
+nps_var_ <- function(x, na.rm = FALSE) {
+  props <- as.numeric(prop.table(x))
+  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2)
+}
+
 
 #' Calculate the standard error of a Net Promoter Score
 #'
@@ -150,19 +171,21 @@ nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
 #' @seealso \code{\link{nps_var}} for the variance of a Net Promoter Score.
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
 nps_se <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
-    sqrt(nps_var(x, na.rm = na.rm) / sum(!is.na(npc(x))))
+  # Break the raw scores into categories
+  categories <- npc(x, breaks)
+
+  # Throw an NA if you're supposed to
+  if (any(is.na(categories)) & !na.rm) {
+    return(NA)
+  }
+
+  nps_se_(table(categories))
 }
 
-
-# Aggregate functions ----------------------------------------------------------
-
-nps_ <- function(x) {
-  nps_format(x[3] - x[1]) / sum(x)
-}
-
-nps_var_ <- function(x, na.rm = FALSE) {
-  props <- as.numeric(prop.table(x))
-  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2)
+#' @name nps_var
+#' @export
+nps_se_ <- function(x, na.rm = FALSE) {
+  sqrt(nps_var_(x) / sum(x))
 }
 
 # Depricated aliases -----------------------------------------------------------

@@ -2,9 +2,12 @@
 % Please edit documentation in R/nps.R
 \name{nps}
 \alias{nps}
+\alias{nps_}
 \title{Calculate a Net Promoter Score}
 \usage{
 nps(x, breaks = getOption("nps.breaks"), na.rm = FALSE)
+
+nps_(x)
 }
 \arguments{
 \item{x}{A vector of \emph{Recommend} scores}

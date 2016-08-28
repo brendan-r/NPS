@@ -53,7 +53,8 @@
 #'
 #' # You can round it if you like
 #' round(nps(x)) ; round(nps(x), 1)
-nps <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE){
+nps <- function(x, breaks = getOption("nps.breaks"),
+                nps.100 = getOption("nps.100"), na.rm = FALSE){
   # Break the raw scores into categories
   categories <- npc(x, breaks)
 
@@ -67,8 +68,8 @@ nps <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE){
 
 #' @name nps
 #' @export
-nps_ <- function(x) {
-  nps_format((x[3] - x[1]) / sum(x))
+nps_ <- function(x, nps.100 = getOption("nps.100")) {
+  nps_format((x[3] - x[1]) / sum(x), nps.100)
 }
 
 #' Create Net Promoter Categories from Likelihood to Recommend Scores
@@ -138,7 +139,8 @@ npc <- function(x, breaks = getOption("nps.breaks")) {
 #' @seealso \code{\link{nps_var_}}, a version which works on counts or
 #'   proportions of responses
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
-nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
+nps_var <- function(x, breaks = getOption("nps.breaks"),
+                    nps.100 = getOption("nps.100"), na.rm = FALSE) {
   # Break the raw scores into categories
   categories <- npc(x, breaks)
 
@@ -153,9 +155,9 @@ nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
 
 #' @name nps_var
 #' @export
-nps_var_ <- function(x, na.rm = FALSE) {
+nps_var_ <- function(x, na.rm = FALSE, nps.100 = getOption("nps.100")) {
   props <- as.numeric(prop.table(x))
-  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2)
+  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2, nps.100)
 }
 
 
@@ -170,7 +172,8 @@ nps_var_ <- function(x, na.rm = FALSE) {
 #' @export
 #' @seealso \code{\link{nps_var}} for the variance of a Net Promoter Score.
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
-nps_se <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
+nps_se <- function(x, breaks = getOption("nps.breaks"),
+                   nps.100 = getOption("nps.100"), na.rm = FALSE) {
   # Break the raw scores into categories
   categories <- npc(x, breaks)
 
@@ -179,13 +182,13 @@ nps_se <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
     return(NA)
   }
 
-  nps_se_(table(categories))
+  nps_se_(table(categories), nps.100 = nps.100)
 }
 
 #' @name nps_var
 #' @export
-nps_se_ <- function(x, na.rm = FALSE) {
-  sqrt(nps_var_(x) / sum(x))
+nps_se_ <- function(x, na.rm = FALSE, nps.100 = getOption("nps.100")) {
+  nps_format(sqrt(nps_var_(x, nps.100 = FALSE) / sum(x)), nps.100)
 }
 
 # Depricated aliases -----------------------------------------------------------

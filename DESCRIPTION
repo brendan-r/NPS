@@ -12,7 +12,7 @@ Description: Small functions to make working with survey data in the context of
     its variance and standard errors, and some simple inferential testing
     procedures. Net Promoter and NPS are registered trademarks of Bain &
     Company, Satmetrix Systems and Fred Reichheld.
-License: MIT + file LICENSE
+License: GPL-2 | GPL-3
 Encoding: UTF-8
 Suggests:
     testthat,

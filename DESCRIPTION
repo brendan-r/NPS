@@ -17,6 +17,8 @@ Description: Small functions to make working with survey data in the context of
     Company, Satmetrix Systems and Fred Reichheld.
 License: GPL-2 | GPL-3
 Encoding: UTF-8
+Depends:
+    stats
 Suggests:
     testthat,
     knitr

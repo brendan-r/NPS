@@ -8,8 +8,13 @@
 #' @param y A vector of \emph{Recommend} scores, to compare to \code{x}. If not
 #'   specified, a one sample test on \code{x} is performed. Defaults to
 #'   \code{NULL}
-#' @param test The type of test to perform. Currently only the Wald/Z-test
-#'   ('\code{wald}') is supported
+#' @param test The type of test to perform. One of \code{"wald"},
+#'   \code{"adjusted.wald"}, or \code{"iterative"}. \code{"iterative"} currently
+#'   works for one-sample tests only.
+#' @param pseudo_observations if \code{"adjusted.wald"} has been selected, a
+#'   vector of counts of 'psuedo observations' which will be added to the data,
+#'   before a Wald interval is constructed. Ignored unless performing the
+#'   \code{"adjusted.wald"} calculation.
 #' @param conf the confidence level of the test and intervals. Defaults to 0.95
 #' @param \dots Not used.
 #' @inheritParams nps
@@ -34,8 +39,7 @@
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
 nps_test <- function(
   x, y = NULL, test = "wald", conf = .95,
-  pseudo_observations = c(0.75, 1.50, 0.75), breaks = getOption("nps.breaks"),
-  nps.100 = getOption("nps.100")
+  pseudo_observations = c(0.75, 1.50, 0.75), breaks = getOption("nps.breaks")
 ) {
 
   if (is.null(y)) {
@@ -59,14 +63,14 @@ nps_test <- function(
 #' @export
 nps_test_ <- function(
   x, y = NULL, test = "wald", conf = .95,
-  pseudo_observations = c(0.75, 1.50, 0.75), nps.100 = getOption("nps.100")
+  pseudo_observations = c(0.75, 1.50, 0.75)
 ) {
 
   # Working with the multiply by 100 thing is too much of a headache during
   # interval construction. Set to FALSE here, turn it back on before exiting
   nps.100.user_setting <- getOption("nps.100")
-  options(nps.100 = FALSE)
-  on.exit(options(nps.100 = nps.100.user_setting))
+  options("nps.100" = FALSE)
+  on.exit(options("nps.100" = nps.100.user_setting))
 
   # A function for adding Agresti-Coull weights, if reqested
   add_wts <- function(x) {
@@ -103,7 +107,7 @@ nps_test_ <- function(
 
   } else if (type == "One sample" & test == "iterative") {
 
-    int <- nps_format(iterative(x, alpha), nps.100)
+    int <- nps_format(iterative(x, alpha))
 
     sig <- min(int) > 0
     delta.hat <- abs(0 - nps.x.raw)
@@ -141,7 +145,7 @@ nps_test_ <- function(
   }
 
   # Re-set the user's preference for NPS units
-  options(nps.100 = nps.100.user_setting)
+  options("nps.100" = nps.100.user_setting)
 
   out <-
     list(

@@ -139,6 +139,7 @@ npc <- function(x, breaks = getOption("nps.breaks")) {
 #' \code{\link{vector}} of raw \emph{Recommend} data
 #'
 #' @inheritParams nps
+#' @param ... Passed to non-depricated functions
 #' @return \code{\link{numeric}}. The variance of the distribution, ranging from
 #'   0 to 1.
 #' @export
@@ -171,7 +172,7 @@ nps_var_ <- function(x, na.rm = FALSE) {
 #' This function calculates the standard error (see below) of a Net Promoter
 #' Score, taking a \code{\link{vector}} of raw \emph{Recommend} data
 #'
-#' @inheritParams nps
+#' @inheritParams nps_var
 #' @return \code{\link{numeric}}. The variance of the distribution, ranging from
 #'   0 to 1.
 #' @export

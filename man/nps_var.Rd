@@ -28,6 +28,8 @@ like. However, a vector may be supplied directly.}
 
 \item{na.rm}{a logical value indicating whether \code{NA} values should be
 stripped before the computation proceeds.}
+
+\item{...}{Passed to non-depricated functions}
 }
 \value{
 \code{\link{numeric}}. The variance of the distribution, ranging from

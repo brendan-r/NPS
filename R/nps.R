@@ -201,21 +201,29 @@ nps_se_ <- function(x, na.rm = FALSE, nps.100 = getOption("nps.100")) {
 
 # Depricated aliases -----------------------------------------------------------
 
+#' @name nps_var
+#' @export
 nps.var <- function(...) {
   nps2_name_check()
   nps_var(...)
 }
 
+#' @name nps_se
+#' @export
 nps.se <- function(...) {
   nps2_name_check()
   nps_se(...)
 }
 
+#' @name nps_var
+#' @export
 npvar <- function(...) {
   nps2_name_check()
   nps_var_(...)
 }
 
+#' @name nps_test
+#' @export
 nps.test <- function(...) {
   nps2_name_check()
   nps_test(...)

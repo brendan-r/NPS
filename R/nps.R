@@ -196,13 +196,13 @@ nps_se_ <- function(x, na.rm = FALSE) {
   # Working with the multiply by 100 thing is too much of a headache during with
   # standard errors. Set to FALSE here, turn it back on before exiting
   nps.100.user_setting <- getOption("nps.100")
-  options(nps.100 = FALSE)
-  on.exit(options(nps.100 = nps.100.user_setting))
+  options("nps.100" = FALSE)
+  on.exit(options("nps.100" = nps.100.user_setting))
 
   nps.var <- nps_var_(x)
 
   # Re-set the user's preference for NPS units
-  options(nps.100 = nps.100.user_setting)
+  options("nps.100" = nps.100.user_setting)
   nps_format(sqrt(nps.var / sum(x)))
 }
 

@@ -53,8 +53,7 @@
 #'
 #' # You can round it if you like
 #' round(nps(x)) ; round(nps(x), 1)
-nps <- function(x, breaks = getOption("nps.breaks"),
-                nps.100 = getOption("nps.100"), na.rm = FALSE){
+nps <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE){
   # Break the raw scores into categories
   categories <- npc(x, breaks)
 
@@ -68,8 +67,8 @@ nps <- function(x, breaks = getOption("nps.breaks"),
 
 #' @name nps
 #' @export
-nps_ <- function(x, nps.100 = getOption("nps.100")) {
-  nps_format((x[3] - x[1]) / sum(x), nps.100)
+nps_ <- function(x) {
+  nps_format((x[3] - x[1]) / sum(x))
 }
 
 #' Create Net Promoter Categories from Likelihood to Recommend Scores
@@ -110,8 +109,7 @@ nps_ <- function(x, nps.100 = getOption("nps.100")) {
 #' table(x, npc(x))
 #'
 #' nps(x)
-npc <- function(x, breaks = getOption("nps.breaks"),
-                nps.100 = getOption("nps.100")) {
+npc <- function(x, breaks = getOption("nps.breaks")) {
 
   # Warn if non-integer values have been supplied
   if (any(x %% 1 != 0)) {
@@ -147,8 +145,7 @@ npc <- function(x, breaks = getOption("nps.breaks"),
 #' @seealso \code{\link{nps_var_}}, a version which works on counts or
 #'   proportions of responses
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
-nps_var <- function(x, breaks = getOption("nps.breaks"),
-                    nps.100 = getOption("nps.100"), na.rm = FALSE) {
+nps_var <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
   # Break the raw scores into categories
   categories <- npc(x, breaks)
 
@@ -163,9 +160,9 @@ nps_var <- function(x, breaks = getOption("nps.breaks"),
 
 #' @name nps_var
 #' @export
-nps_var_ <- function(x, na.rm = FALSE, nps.100 = getOption("nps.100")) {
+nps_var_ <- function(x, na.rm = FALSE) {
   props <- as.numeric(prop.table(x))
-  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2, nps.100)
+  nps_format((props[3] + props[1]) - (props[3] - props[1]) ^ 2)
 }
 
 
@@ -180,8 +177,7 @@ nps_var_ <- function(x, na.rm = FALSE, nps.100 = getOption("nps.100")) {
 #' @export
 #' @seealso \code{\link{nps_var}} for the variance of a Net Promoter Score.
 #' @author Brendan Rocks \email{foss@@brendanrocks.com}
-nps_se <- function(x, breaks = getOption("nps.breaks"),
-                   nps.100 = getOption("nps.100"), na.rm = FALSE) {
+nps_se <- function(x, breaks = getOption("nps.breaks"), na.rm = FALSE) {
   # Break the raw scores into categories
   categories <- npc(x, breaks)
 
@@ -190,13 +186,23 @@ nps_se <- function(x, breaks = getOption("nps.breaks"),
     return(NA)
   }
 
-  nps_se_(table(categories), nps.100 = nps.100)
+  nps_se_(table(categories))
 }
 
-#' @name nps_var
+#' @name nps_se
 #' @export
-nps_se_ <- function(x, na.rm = FALSE, nps.100 = getOption("nps.100")) {
-  nps_format(sqrt(nps_var_(x, nps.100 = FALSE) / sum(x)), nps.100)
+nps_se_ <- function(x, na.rm = FALSE) {
+  # Working with the multiply by 100 thing is too much of a headache during with
+  # standard errors. Set to FALSE here, turn it back on before exiting
+  nps.100.user_setting <- getOption("nps.100")
+  options(nps.100 = FALSE)
+  on.exit(options(nps.100 = nps.100.user_setting))
+
+  nps.var <- nps_var_(x)
+
+  # Re-set the user's preference for NPS units
+  options(nps.100 = nps.100.user_setting)
+  nps_format(sqrt(nps.var / sum(x)))
 }
 
 # Depricated aliases -----------------------------------------------------------
